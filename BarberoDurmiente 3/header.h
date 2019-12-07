@@ -1,0 +1,53 @@
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+
+//customers = 0
+//mutex = Semaphore (1)
+//customer = Semaphore (0)
+//barber = Semaphore (0)
+//customerDone = Semaphore (0)
+//barberDone = Semaphore (0)
+
+#define MUTEX         0
+#define CLIENTE       1
+#define BARBERO	      2
+#define CLIENTEHECHO  3
+#define BARBEROHECHO  4
+
+
+
+typedef struct salon {
+
+	int clientes;
+	int tamanio;
+} Salon;
+
+typedef unsigned char uchar;
+typedef long long int lli;
+
+int sem_wait(int semid, int semnum, unsigned int val) {
+	struct sembuf op;
+	op.sem_num = semnum;
+	op.sem_op = -val;
+	op.sem_flg = 0; 
+
+	return semop(semid, &op, 1);
+}
+
+int sem_signal(int semid, int semnum, unsigned int val) {
+	struct sembuf op;
+	
+	op.sem_num = semnum;
+	op.sem_op = val;
+	op.sem_flg = 0; 
+	return semop(semid, &op, 1);
+}
+
+#endif
